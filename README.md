@@ -1,2 +1,2 @@
 # Seguimiento y funcionamiento del proyecto P14 - Radar Ultrasónico de barrido
-Lukas Fuentes
+Integrantes del proyecto: Martin Ferreira, Lukas Fuentes
