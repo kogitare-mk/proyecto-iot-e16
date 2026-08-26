@@ -20,16 +20,16 @@ Referencia validada por: <Reiner>
 | Pines                              | TRIG GPIO 26, ECHO GPIO 25 |
 | Temperatura ambiente               | <°C> (la velocidad del sonido depende de ella) |
 | Velocidad del sonido empleada      | <m/s> (343 a 20 °C) |
-| Pausa entre disparos               | <ms> |
-| Arco del barrido                   | de <grados> a <grados>, paso <grados> |
+| Pausa entre disparos               | <60ms> |
+| Arco del barrido                   | de 15 a 165, paso 5 grados |
 | Montaje del sensor sobre el brazo  | <firme y centrado / con juego> |
-| Alimentacion del servo             | riel de 5 V, masa comun: si / no |
+| Alimentacion del servo             | riel de 5 V, masa comun: si |
 
 ### Tolerancia declarada ANTES de verificar
 | Criterio                                        | Tolerancia aceptada |
 |--------------------------------------------------|---------------------|
-| Desviacion respecto de la regla                   | <+/- cm> |
-| Porcentaje de mediciones expiradas aceptado       | <%> |
+| Desviacion respecto de la regla                   | <+/- 3 cm> |
+| Porcentaje de mediciones expiradas aceptado       | <10%> |
 
 ### Contraste con regla, dos distancias del rango de trabajo
 | Distancia real (cm) | Media del sensor (cm) | Dispersion (cm) | Desviacion (cm) | Desviacion (%) | Expiradas (%) |
@@ -40,8 +40,8 @@ Referencia validada por: <Reiner>
 ### Caso fuera de rango
 | Situacion provocada            | Respuesta del sensor | Tratamiento en el firmware |
 |--------------------------------|----------------------|----------------------------|
-| Sin obstaculo (apuntando al vacio) | <expira / valor>  | <cual>                     |
-| Objeto dentro de la zona muerta    | <>                | <>                         |
+| Sin obstaculo (apuntando al vacio) | <expira / 0>  | <Gatilla timeout, transiciona a ESTADO_ERROR y mueve el servo a 90 grados (salida segura).>                     |
+| Objeto dentro de la zona muerta    | <lecturas erráticas>                | <Se filtrará mediante la tolerancia o se ignorará si excede los límites lógicos.>                         |
 
 ### Tiempo de asentamiento del servo (paso 3 + script)
 Salto empleado: de <grados> a <grados>   Banda de estabilidad: <cm> (del paso 2)
