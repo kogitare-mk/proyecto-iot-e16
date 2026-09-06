@@ -17,11 +17,11 @@ Referencia validada por: <Reiner>
 |------------------------------------|-----------------|
 | Alimentacion del modulo            | 5 V |
 | Divisor en ECHO                    | 10 k / 20 k; tension medida en el punto medio: <V> |
-| Pines                              | TRIG GPIO 26, ECHO GPIO 25 |
-| Temperatura ambiente               | <°C> (la velocidad del sonido depende de ella) |
-| Velocidad del sonido empleada      | <m/s> (343 a 20 °C) |
-| Pausa entre disparos               | <60ms> |
-| Arco del barrido                   | de 15 a 165, paso 5 grados |
+| Pines                              | TRIG GPIO 5, ECHO GPIO 18 |
+| Temperatura ambiente               | <20°C> (la velocidad del sonido depende de ella) |
+| Velocidad del sonido empleada      | <343.4m/s> (343 a 20 °C) |
+| Pausa entre disparos               | <200ms> |
+| Arco del barrido                   | de 0 a 180, paso 5 grados |
 | Montaje del sensor sobre el brazo  | <firme y centrado / con juego> |
 | Alimentacion del servo             | riel de 5 V, masa comun: si |
 
@@ -68,12 +68,12 @@ con regla>
 
 | Parametro                          | Valor medido |
 |------------------------------------|--------------|
-| Angulos por vuelta                 | <n>          |
-| Vueltas registradas                | <n>          |
-| Angulos sin eco                    | <%>          |
-| Repetibilidad entre vueltas        | <cm> de dispersion media |
+| Angulos por vuelta                 | <37>          |
+| Vueltas registradas                | <5>          |
+| Angulos sin eco                    | <10%>          |
+| Repetibilidad entre vueltas        | <3cm> de dispersion media |
 | Peor angulo                        | <grados> (<cm>) |
 | Duracion de una vuelta completa    | <ms>         |
 
-Los angulos sin eco se concentran en <donde>. Explicacion del equipo:
-<por que ahi y no en otra parte>
+Los angulos sin eco se concentran en zonas donde el pulso ultrasónico impacta superficies con ángulo no perpendicular. Explicacion del equipo:
+La señal acústica sufre reflexión especular al chocar contra superficies inclinadas, desviando la onda sonora fuera del alcance del receptor HC-SR04 y provocando un timeout por pérdida de eco.
