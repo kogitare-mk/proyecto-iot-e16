@@ -5,7 +5,13 @@ ________________________________________________________________________________
 
 GT1-Sem3: https://wokwi.com/projects/472364804717868033 (Link proyecto en wokwi) - Datos simulados
 
-m_CAL: 0.96 ; b_CAL: 2.094 ; Tolerancia: 4cm ; N_filtro: 5 (Usamos un N bajo para que el filtro limpie el ruido)
+| Distancia medida (cm) | Nominal (cm) | Medido (cm) |Calibrado (cm) | Filtrado | 
+|---------------------|-----------------------|-----------------|-----------------|----------------|
+| <11>                  | <11.01>| <13.65>| <13.56>| <13.63>|
+| <30>                  | <30.24>| <33.76>| <33.76>| <36.73>|
+| <20>                  | <20.05>| <23.05>| <20.04>| <18.64>|
+
+m_CAL: 0.96 ; b_CAL: 2.094 ; Tolerancia: 4cm ; N_filtro: 5 el retardo del filtro es de dos muestras, y en un barrido mecánico eso desplaza angularmente el obstáculo detectado
 
 __________________________________________________________________________________________________________________
 
