@@ -5,7 +5,7 @@ ________________________________________________________________________________
 
 GT1-Sem3: https://wokwi.com/projects/472364804717868033 (Link proyecto en wokwi) - Datos simulados
 
-| Distancia medida (cm) | Nominal (cm) | Medido (cm) |Calibrado (cm) | Filtrado | 
+| Distancia medida (cm) | Nominal (cm) | Medido (cm) |Calibrado (cm) | Filtrado (cm) | 
 |---------------------|-----------------------|-----------------|-----------------|----------------|
 | <11>                  | <11.01>| <13.65>| <13.56>| <13.63>|
 | <30>                  | <30.24>| <33.76>| <33.76>| <36.73>|
