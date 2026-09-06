@@ -93,32 +93,26 @@ float medirDistancia() {
 void mostrarOLED(int ang, float dist, Estado est) {
   if (!bus_ok) return;
   display.clearDisplay();
-  
   display.setTextSize(1);
   display.setCursor(0, 0);
   display.printf("ESTADO: %s\n", nombreEstado(est));
-  
   display.setTextSize(2);
   display.setCursor(0, 16);
   display.printf("Ang: %d\n", ang);
-  
   display.setCursor(0, 36);
   if (dist < 0) {
     display.println("D: ERROR");
   } else {
     display.printf("D: %.1f cm\n", dist);
   }
-  
   display.setTextSize(1);
   display.setCursor(0, 56);
   display.printf("BUS: I2C %s", bus_ok ? "OK" : "ERROR");
-  
   display.display();
 }
 
 void setup() {
   Serial.begin(115200);
-  
   Wire.begin(21, 22);
   Wire.setClock(400000); 
   
@@ -134,13 +128,10 @@ void setup() {
   pinMode(PIN_BOTON, INPUT_PULLDOWN); 
   pinMode(PIN_LED_AL, OUTPUT);
   pinMode(PIN_BUZZER, OUTPUT);
-
   miServo.setPeriodHertz(50);
   miServo.attach(PIN_SERVO, 500, 2400);
   miServo.write(angulo);
-
   Serial.println("t_ms,angulo,distancia_cm,estado,bus_ok"); 
-
   cambiar(ASENTAMIENTO);
 }
 
@@ -159,7 +150,6 @@ void loop() {
         angulo = ANGULO_MIN;
         direccion = 1;
       }
-      
       miServo.write(angulo);
       cambiar(ASENTAMIENTO);
       break;
@@ -175,7 +165,7 @@ void loop() {
       {
         buzzer(false);
         float distancia_cruda = medirDistancia();
-        
+      
         if (distancia_cruda < 0) {
           invalidas++;
           if (invalidas >= MAX_INVALIDAS) {
@@ -185,11 +175,8 @@ void loop() {
           }
         } else {
           invalidas = 0;
-          
           ultima_dist = (distancia_cruda * M_CAL) + B_CAL; 
-          
           Serial.printf("%lu,%d,%.1f,%s,%u\n", millis(), angulo, ultima_dist, nombreEstado(estado), bus_ok ? 1 : 0);
-          
           cambiar(ACTUALIZAR_PANTALLA);
         }
       }
@@ -203,7 +190,6 @@ void loop() {
     case ERROR_SEGURO:
       digitalWrite(PIN_LED_AL, (millis() / 300) % 2);
       buzzer((millis() / 300) % 2); 
-      
       static uint32_t t_oled_error = 0;
       if (millis() - t_oled_error > 500) {
         mostrarOLED(angulo, -1.0, estado);
