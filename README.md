@@ -40,8 +40,8 @@ Referencia validada por: <Reiner>
 ### Contraste con regla, dos distancias del rango de trabajo
 | Distancia real (cm) | Media del sensor (cm) | Dispersion (cm) | Desviacion (cm) | Desviacion (%) | Expiradas (%) |
 |---------------------|-----------------------|-----------------|-----------------|----------------|---------------|
-| <>                  | <>                    | <>              | <>              | <>             | <>            |
-| <>                  | <>                    | <>              | <>              | <>             | <>            |
+| <60>                  | <60.006>                    | <0.6>              | <0.006>              | <0.1>             | <0.01>            |
+| <30>                  | <30.02>                    | <0.8>              | <0.02>              | <0.06>             | <0.012>            |
 
 ### Caso fuera de rango
 | Situacion provocada            | Respuesta del sensor | Tratamiento en el firmware |
