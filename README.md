@@ -22,10 +22,10 @@ Referencia validada por: <Reiner>
 | Condicion                          | Valor declarado |
 |------------------------------------|-----------------|
 | Alimentacion del modulo            | 5 V |
-| Divisor en ECHO                    | 10 k / 20 k; tension medida en el punto medio: <V> |
+| Divisor en ECHO                    | 10 k / 20 k; tension medida en el punto medio: <3.26V> |
 | Pines                              | TRIG GPIO 5, ECHO GPIO 18 |
-| Temperatura ambiente               | <20°C> (la velocidad del sonido depende de ella) |
-| Velocidad del sonido empleada      | <343.4m/s> (343 a 20 °C) |
+| Temperatura ambiente               | <17°C> (la velocidad del sonido depende de ella) |
+| Velocidad del sonido empleada      | <341.6m/s> (341,6 a 17 °C) |
 | Pausa entre disparos               | <200ms> |
 | Arco del barrido                   | de 0 a 180, paso 5 grados |
 | Montaje del sensor sobre el brazo  | <firme y centrado / con juego> |
@@ -40,8 +40,8 @@ Referencia validada por: <Reiner>
 ### Contraste con regla, dos distancias del rango de trabajo
 | Distancia real (cm) | Media del sensor (cm) | Dispersion (cm) | Desviacion (cm) | Desviacion (%) | Expiradas (%) |
 |---------------------|-----------------------|-----------------|-----------------|----------------|---------------|
-| <60>                  | <60.006>                    | <0.6>              | <0.006>              | <0.1>             | <0.01>            |
-| <30>                  | <30.02>                    | <0.8>              | <0.02>              | <0.06>             | <0.012>            |
+| <60>                  | <60.006>                    | <0.6>              | <0.0>              | <0.1>             | <0.01>            |
+| <30>                  | <30.02>                    | <0.8>              | <0.02>              | <0.6>             | <0.012>            |
 
 ### Caso fuera de rango
 | Situacion provocada            | Respuesta del sensor | Tratamiento en el firmware |
@@ -49,7 +49,7 @@ Referencia validada por: <Reiner>
 | Sin obstaculo (apuntando al vacio) | <expira / 0>  | <Gatilla timeout, transiciona a ESTADO_ERROR y mueve el servo a 90 grados (salida segura).>                     |
 | Objeto dentro de la zona muerta    | <lecturas erráticas>                | <Se filtrará mediante la tolerancia o se ignorará si excede los límites lógicos.>                         |
 
-### Tiempo de asentamiento del servo (paso 3 + script)
+### Tiempo de asentamiento del servo (paso 3 + script) //Se continuara el readme en la semana 8
 Salto empleado: de <grados> a <grados>   Banda de estabilidad: <cm> (del paso 2)
 
 | Repeticion | Valor final (cm) | Asentado a los (ms) |
