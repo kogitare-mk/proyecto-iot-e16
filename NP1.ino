@@ -182,10 +182,16 @@ void loop() {
       break;
 
     case ACTUALIZAR_PANTALLA:
-      mostrarOLED(angulo, ultima_dist, estado);
-      cambiar(BARRIDO);
+      Wire.beginTransmission(DIR_OLED);
+      if (Wire.endTransmission() != 0) {
+        bus_ok = false;
+        cambiar(ERROR_SEGURO);
+      } else {
+        bus_ok = true;
+        mostrarOLED(angulo, ultima_dist, estado);
+        cambiar(BARRIDO);
+      }
       break;
-
     case ERROR_SEGURO:
       miServo.write(90);
       digitalWrite(PIN_LED_AL, (millis() / 300) % 2);
