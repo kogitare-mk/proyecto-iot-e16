@@ -79,7 +79,7 @@ con regla>
 | Angulos sin eco                    | <10%>          |
 | Repetibilidad entre vueltas        | <3cm> de dispersion media |
 | Peor angulo                        | <grados> (<cm>) |
-| Duracion de una vuelta completa    | <ms>         |
+| Duracion de una vuelta completa    | <9200ms>         |
 
 Los angulos sin eco se concentran en zonas donde el pulso ultrasónico impacta superficies con ángulo no perpendicular. Explicacion del equipo:
 La señal acústica sufre reflexión especular al chocar contra superficies inclinadas, desviando la onda sonora fuera del alcance del receptor HC-SR04 y provocando un timeout por pérdida de eco.
