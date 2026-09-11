@@ -9,9 +9,8 @@ const uint8_t PIN_SERVO   = 19;
 const uint8_t PIN_BOTON   = 25; 
 const uint8_t PIN_LED_AL  = 33; 
 const uint8_t PIN_BUZZER  = 27; 
-//Aplicar correcion a M y B 07-09
-const float M_CAL = 1.0; 
-const float B_CAL = 0.0; 
+const float M_CAL = 0.882; 
+const float B_CAL = 1.268; 
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -85,7 +84,7 @@ float medirDistancia() {
   digitalWrite(PIN_TRIG, HIGH);
   delayMicroseconds(10);
   digitalWrite(PIN_TRIG, LOW);
-  long duracion = pulseIn(PIN_ECHO, HIGH, 30000); 
+  long duracion = pulseIn(PIN_ECHO, HIGH, 6000); 
   if (duracion == 0) return -1.0; 
   return duracion * 0.0343 / 2.0; 
 }
@@ -188,6 +187,7 @@ void loop() {
       break;
 
     case ERROR_SEGURO:
+      miServo.write(90);
       digitalWrite(PIN_LED_AL, (millis() / 300) % 2);
       buzzer((millis() / 300) % 2); 
       static uint32_t t_oled_error = 0;
