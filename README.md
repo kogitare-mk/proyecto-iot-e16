@@ -49,7 +49,7 @@ Referencia validada por: <Reiner>
 | Sin obstaculo (apuntando al vacio) | <expira / 0>  | <Gatilla timeout, transiciona a ESTADO_ERROR y mueve el servo a 90 grados (salida segura).>                     |
 | Objeto dentro de la zona muerta    | <lecturas erráticas>                | <Se filtrará mediante la tolerancia o se ignorará si excede los límites lógicos.>                         |
 
-### Tiempo de asentamiento del servo (paso 3 + script) //Se continuara el readme en la semana 8
+### Tiempo de asentamiento del servo (paso 3 + script) //Se continuara el readme en la semana 10
 Salto empleado: de <grados> a <grados>   Banda de estabilidad: <cm> (del paso 2)
 
 | Repeticion | Valor final (cm) | Asentado a los (ms) |
@@ -83,3 +83,9 @@ con regla>
 
 Los angulos sin eco se concentran en zonas donde el pulso ultrasónico impacta superficies con ángulo no perpendicular. Explicacion del equipo:
 La señal acústica sufre reflexión especular al chocar contra superficies inclinadas, desviando la onda sonora fuera del alcance del receptor HC-SR04 y provocando un timeout por pérdida de eco.
+
+Nodos de publicacion Broker MQTT
+curso/E16/P14/nodo1
+curso/E16/P14/nodo1/estado
+curso/E16/P14/nodo1/cmd
+
