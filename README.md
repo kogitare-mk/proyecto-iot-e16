@@ -84,8 +84,10 @@ con regla>
 Los angulos sin eco se concentran en zonas donde el pulso ultrasónico impacta superficies con ángulo no perpendicular. Explicacion del equipo:
 La señal acústica sufre reflexión especular al chocar contra superficies inclinadas, desviando la onda sonora fuera del alcance del receptor HC-SR04 y provocando un timeout por pérdida de eco.
 
-Nodos de publicacion Broker MQTT
-curso/E16/P14/nodo1
-curso/E16/P14/nodo1/estado
-curso/E16/P14/nodo1/cmd
+| Nodos de publicacion Broker MQTT   |
+|------------------------------------|
+| curso/E16/P14/nodo1                |
+| curso/E16/P14/nodo1/estado         |
+| curso/E16/P14/nodo1/cmd            | 
+
 
