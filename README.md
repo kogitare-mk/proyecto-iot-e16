@@ -1,4 +1,4 @@
-# Seguimiento y funcionamiento del proyecto P14 - Radar Ultrasónico de barrido
+### Seguimiento y funcionamiento del proyecto P14 - Radar Ultrasónico de barrido
 Integrantes del proyecto: Martin Ferreira, Lukas Fuentes, Lucas Miranda, Martin Caniuñir, Ángel Sepulveda
 __________________________________________________________________________________________________________________
 
@@ -43,19 +43,17 @@ Referencia validada por: <Reiner>
 | Montaje del sensor sobre el brazo  | <firme y centrado / con juego> |
 | Alimentacion del servo             | riel de 5 V, masa comun: si |
 
-### Tolerancia declarada ANTES de verificar
 | Criterio                                        | Tolerancia aceptada |
 |--------------------------------------------------|---------------------|
 | Desviacion respecto de la regla                   | <+/- 3 cm> |
 | Porcentaje de mediciones expiradas aceptado       | <10%> |
 
-### Contraste con regla, dos distancias del rango de trabajo
 | Distancia real (cm) | Media del sensor (cm) | Dispersion (cm) | Desviacion (cm) | Desviacion (%) | Expiradas (%) |
 |---------------------|-----------------------|-----------------|-----------------|----------------|---------------|
 | <60>                  | <60.006>                    | <0.6>              | <0.0>              | <0.1>             | <0.01>            |
 | <30>                  | <30.02>                    | <0.8>              | <0.02>              | <0.6>             | <0.012>            |
 
-### Caso fuera de rango
+
 | Situacion provocada            | Respuesta del sensor | Tratamiento en el firmware |
 |--------------------------------|----------------------|----------------------------|
 | Sin obstaculo (apuntando al vacio) | <expira / 0>  | <Gatilla timeout, transiciona a ESTADO_ERROR y mueve el servo a 90 grados (salida segura).>                     |
@@ -78,11 +76,6 @@ Parametro adoptado: ASENTAMIENTO_MS = <valor>
 Se adopta el PEOR caso redondeado hacia arriba, no el promedio: un angulo mal
 medido de cada cinco basta para deformar el mapa completo, y en un mapa el error
 de un solo punto se ve.
-
-### Barrido (paso 4 + script)
-Escena declarada ANTES de barrer:
-<describir que hay delante, en que angulo aproximado y a que distancia medida
-con regla>
 
 | Parametro                          | Valor medido |
 |------------------------------------|--------------|
