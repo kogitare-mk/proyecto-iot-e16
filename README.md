@@ -1,5 +1,17 @@
 # Seguimiento y funcionamiento del proyecto P14 - Radar Ultrasónico de barrido
 Integrantes del proyecto: Martin Ferreira, Lukas Fuentes, Lucas Miranda, Martin Caniuñir, Ángel Sepulveda
+__________________________________________________________________________________________________________________
+
+| Bibliotecas esenciales para el funcionamiento del codigo fuente   |
+|------------------------------------|
+| ESP32Servo                |
+| Wire                      |
+| Adafruit_GFX              |
+| Adafruit_SSD1306          |
+| WiFi                      |
+| PubSubClient              |
+| ArduinoJson               |
+|---------------------------|
 
 __________________________________________________________________________________________________________________
 
@@ -86,8 +98,8 @@ La señal acústica sufre reflexión especular al chocar contra superficies incl
 
 | Nodos de publicacion Broker MQTT   |
 |------------------------------------|
-| curso/E16/P14/nodo1                |
-| curso/E16/P14/nodo1/estado         |
-| curso/E16/P14/nodo1/cmd            | 
+| curso/E16/P14/radar                |
+| curso/E16/P14/radar/estado         |
+| curso/E16/P14/radar/cmd            | 
 
 
