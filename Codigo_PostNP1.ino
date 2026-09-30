@@ -7,6 +7,7 @@
 #include <ArduinoJson.h>
 #include "config.h" 
 
+// --- PINES ---
 const uint8_t PIN_TRIG    = 5;
 const uint8_t PIN_ECHO    = 18;
 const uint8_t PIN_SERVO   = 19;
@@ -14,29 +15,30 @@ const uint8_t PIN_BOTON   = 25;
 const uint8_t PIN_LED_AL  = 33; 
 const uint8_t PIN_BUZZER  = 27; 
 
+// --- CALIBRACIÓN FÍSICA ---
 const float M_CAL = 1.0; 
 const float B_CAL = 0.0; 
 
-// pantalla OLED
+// --- PANTALLA OLED ---
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 const uint8_t DIR_OLED = 0x3C;
 bool bus_ok = false;
 
-//config constantes y tiempos
+// --- CONFIGURACIÓN DE HARDWARE Y TIEMPOS ---
 const bool     BUZZER_PASIVO  = true; 
 const uint32_t FREC_BUZZER_HZ = 2000; 
-const uint8_t  ANGULO_MIN     = 0;
-const uint8_t  ANGULO_MAX     = 180;
+const uint8_t  ANGULO_MIN     = 10;   
+const uint8_t  ANGULO_MAX     = 170; 
 const uint8_t  PASO_ANGULO    = 5;
 const uint32_t T_ASENTAMIENTO_MS = 200; 
 const uint32_t T_ANTIRREBOTE_MS  = 80;  
 const uint32_t TIMEOUT_ECO_US    = 6000; 
 const uint8_t  UMBRAL_ERRORES_BARRIDO = 4;
 
-//config mqtt
-const uint32_t PERIODO_PUB_MS    = 5000;   // Publicar cada 5 segundos
+// --- CONFIGURACIÓN MQTT ---
+const uint32_t PERIODO_PUB_MS    = 5000;   
 const uint32_t REINTENTO_WIFI_MS = 15000;
 const uint32_t ESPERA_INICIAL    = 2000;
 const uint32_t ESPERA_MAXIMA     = 30000;
@@ -48,6 +50,7 @@ String clientId, topicDatos, topicEstado, topicCmd;
 uint32_t tPub = 0, tWiFi = 0, tReconexion = 0;
 uint32_t esperaReconexion = ESPERA_INICIAL;
 
+// --- MÁQUINA DE ESTADOS ---
 enum Estado : uint8_t { BARRIDO, ASENTAMIENTO, DISPARAR_PULSO, ESPERAR_HIGH, ESPERAR_LOW, ACTUALIZAR_PANTALLA, ERROR_SEGURO };
 
 Servo    miServo;
@@ -73,18 +76,9 @@ const char* nombreEstado(Estado e) {
   return "?";
 }
 
-void publicarEstado(Estado e) {
-  if (mqtt.connected()) {
-    mqtt.publish(topicEstado.c_str(), nombreEstado(e), true);
-  }
-}
-
 void cambiar(Estado e) {
   if (estado != e) {
     estado = e;
-    t_entrada = millis();
-    publicarEstado(estado);
-  } else {
     t_entrada = millis();
   }
 }
@@ -148,7 +142,6 @@ void recibirComando(char* topic, byte* payload, unsigned int largo) {
     return;
   }
   Serial.printf("[cmd] recibido en %s\n", topic);
-  // AquI se procesarAn los comandos en la Semana 11
 }
 
 void mantenerMQTT() {
@@ -186,16 +179,16 @@ void publicarDatos() {
   char buf[256];
   size_t n = serializeJson(doc, buf, sizeof(buf));
 
-  // Publicación retenida con la sobrecarga de 4 parAmetros
   if (mqtt.publish(topicDatos.c_str(), (const uint8_t*)buf, n, true)) {
     Serial.printf("[pub] %s -> %s\n", topicDatos.c_str(), buf);
   }
+
+  mqtt.publish(topicEstado.c_str(), nombreEstado(estado), true);
 }
 
 void setup() {
   Serial.begin(115200);
   
-
   Wire.begin(21, 22);
   Wire.setClock(400000); 
   if(!display.begin(SSD1306_SWITCHCAPVCC, DIR_OLED)) bus_ok = false;
@@ -206,13 +199,16 @@ void setup() {
   pinMode(PIN_BOTON, INPUT_PULLDOWN); 
   pinMode(PIN_LED_AL, OUTPUT);
   pinMode(PIN_BUZZER, OUTPUT);
+  
   miServo.setPeriodHertz(50);
-  miServo.attach(PIN_SERVO, 500, 2400);
+  miServo.attach(PIN_SERVO, 500, 2400); 
   miServo.write(angulo);
+
   clientId    = String(MQTT_USER) + "-radar";                               
   topicDatos  = String("curso/") + MQTT_USER + "/P14/radar";                
   topicEstado = topicDatos + "/estado";
   topicCmd    = topicDatos + "/cmd";
+
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(true);
   WiFi.begin(WIFI_SSID, WIFI_PASS);
