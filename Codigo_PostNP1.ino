@@ -116,7 +116,7 @@ void mostrarOLED(int ang, float dist, Estado est) {
   display.setCursor(0, 16);
   display.printf("Ang: %d\n", ang);
   display.setCursor(0, 36);
-  if (dist < 0) display.println("D: ERROR");
+  if (dist < 0) display.println("D: > MAX");
   else display.printf("D: %.1f cm\n", dist);
   display.setTextSize(1);
   display.setCursor(0, 56);
@@ -294,11 +294,11 @@ void loop() {
         if (digitalRead(PIN_ECHO) == LOW) {
           long duracion = micros() - t_eco_inicio;
           float distancia_cruda = duracion * 0.0343 / 2.0; 
-          ultima_dist = (distancia_cruda * M_CAL) + B_CAL; 
+          ultima_dist = (distancia_cruda * M_CAL) + B_CAL;
+          invalidas = 0;
           cambiar(ACTUALIZAR_PANTALLA);
           
         } else if (micros() - t_eco_inicio > TIMEOUT_ECO_US) {
-          invalidas++;
           ultima_dist = -1.0; 
           cambiar(ACTUALIZAR_PANTALLA); 
         }
@@ -318,7 +318,7 @@ void loop() {
       break;
 
     case ERROR_SEGURO:
-      miServo.write(90); 
+      if (miServo.attached()) miServo.detach();
       digitalWrite(PIN_LED_AL, (millis() / 300) % 2);
       buzzer((millis() / 300) % 2); 
       
@@ -330,7 +330,8 @@ void loop() {
       
       if (boton()) {
         invalidas = 0;
-        buzzer(false); 
+        buzzer(false);
+        if (!miServo.attached()) miServo.attach(PIN_SERVO, 500, 2400);
         cambiar(BARRIDO);
       }
       break;
