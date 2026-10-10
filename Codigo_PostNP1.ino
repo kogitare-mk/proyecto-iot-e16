@@ -154,7 +154,7 @@ void mantenerMQTT() {
   Serial.printf("[mqtt] conectando como %s ... ", clientId.c_str());
   if (mqtt.connect(clientId.c_str(), MQTT_USER, MQTT_PASS, topicEstado.c_str(), 1, true, "offline")) {
     Serial.println("OK");
-    mqtt.publish(topicEstado.c_str(), nombreEstado(estado), true); 
+    mqtt.publish(topicEstado.c_str(), "online", true); 
     mqtt.subscribe(topicCmd.c_str(), 1); 
     esperaReconexion = ESPERA_INICIAL;
   } else {
@@ -182,8 +182,6 @@ void publicarDatos() {
   if (mqtt.publish(topicDatos.c_str(), (const uint8_t*)buf, n, true)) {
     Serial.printf("[pub] %s -> %s\n", topicDatos.c_str(), buf);
   }
-
-  mqtt.publish(topicEstado.c_str(), nombreEstado(estado), true);
 }
 
 void setup() {
