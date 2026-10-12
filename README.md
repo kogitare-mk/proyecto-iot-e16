@@ -3,14 +3,14 @@ Integrantes del proyecto: Martin Ferreira, Lukas Fuentes, Lucas Miranda, Martin 
 __________________________________________________________________________________________________________________
 
 | Bibliotecas esenciales para el funcionamiento del codigo fuente   |
-|---------------------------------------------------------|
-| ESP32Servo                | Uso del servomotor SG90    |
-| Wire                      | Comunicacion con LCD       |
-| Adafruit_GFX              | Dibujo en LCD              |
-| Adafruit_SSD1306          | Controlador LCD            |
-| WiFi                      | Comunicacion WiFi ESP32    |
-| PubSubClient              | Libreria Broker MQTT       |
-| ArduinoJson               | Estructurador Payloads Json|
+|-----------------------|---------------------------------|
+| ESP32Servo            | Uso del servomotor SG90      |
+| Wire                  | Comunicacion con LCD         |
+| Adafruit_GFX          | Dibujo en LCD                |
+| Adafruit_SSD1306      | Controlador LCD              |
+| WiFi                  | Comunicacion WiFi ESP32      |
+| PubSubClient          | Libreria Broker MQTT         |
+| ArduinoJson           | Estructurador Payloads Json  |
 
 __________________________________________________________________________________________________________________
 
@@ -37,7 +37,7 @@ Referencia validada por: <Reiner>
 | Pines                              | TRIG GPIO 5, ECHO GPIO 18 |
 | Temperatura ambiente               | <17°C> (la velocidad del sonido depende de ella) |
 | Velocidad del sonido empleada      | <341.6m/s> (341,6 a 17 °C) |
-| Pausa entre disparos               | <200ms> |
+| Pausa entre disparos               | <100ms> |
 | Arco del barrido                   | de 10 a 170, paso 10 grados |
 | Montaje del sensor sobre el brazo  | <firme y centrado / con juego> |
 | Alimentacion del servo             | riel de 5 V, masa comun: si |
