@@ -3,7 +3,7 @@ Integrantes del proyecto: Martin Ferreira, Lukas Fuentes, Lucas Miranda, Martin 
 __________________________________________________________________________________________________________________
 
 | Bibliotecas esenciales para el funcionamiento del codigo fuente   |
-|-----------------------|---------------------------------|
+|--------------------------------------------------------|
 | ESP32Servo            | Uso del servomotor SG90      |
 | Wire                  | Comunicacion con LCD         |
 | Adafruit_GFX          | Dibujo en LCD                |
