@@ -3,14 +3,14 @@ Integrantes del proyecto: Martin Ferreira, Lukas Fuentes, Lucas Miranda, Martin 
 __________________________________________________________________________________________________________________
 
 | Bibliotecas esenciales para el funcionamiento del codigo fuente   |
-|------------------------------------|
-| ESP32Servo                |
-| Wire                      |
-| Adafruit_GFX              |
-| Adafruit_SSD1306          |
-| WiFi                      |
-| PubSubClient              |
-| ArduinoJson               |
+|---------------------------------------------------------|
+| ESP32Servo                | Uso del servomotor SG90    |
+| Wire                      | Comunicacion con LCD       |
+| Adafruit_GFX              | Dibujo en LCD              |
+| Adafruit_SSD1306          | Controlador LCD            |
+| WiFi                      | Comunicacion WiFi ESP32    |
+| PubSubClient              | Libreria Broker MQTT       |
+| ArduinoJson               | Estructurador Payloads Json|
 
 __________________________________________________________________________________________________________________
 
@@ -38,7 +38,7 @@ Referencia validada por: <Reiner>
 | Temperatura ambiente               | <17°C> (la velocidad del sonido depende de ella) |
 | Velocidad del sonido empleada      | <341.6m/s> (341,6 a 17 °C) |
 | Pausa entre disparos               | <200ms> |
-| Arco del barrido                   | de 0 a 180, paso 5 grados |
+| Arco del barrido                   | de 10 a 170, paso 10 grados |
 | Montaje del sensor sobre el brazo  | <firme y centrado / con juego> |
 | Alimentacion del servo             | riel de 5 V, masa comun: si |
 
@@ -55,11 +55,11 @@ Referencia validada por: <Reiner>
 
 | Situacion provocada            | Respuesta del sensor | Tratamiento en el firmware |
 |--------------------------------|----------------------|----------------------------|
-| Sin obstaculo (apuntando al vacio) | <expira / 0>  | <Gatilla timeout, transiciona a ESTADO_ERROR y mueve el servo a 90 grados (salida segura).>                     |
+| Sin obstaculo (apuntando al vacio) | < >MAX / 0>  | <Si se detectan 4 errores en una vuelta completa, transiciona a ESTADO_ERROR y mueve el servo a 90 grados (salida segura).>                     |
 | Objeto dentro de la zona muerta    | <lecturas erráticas>                | <Se filtrará mediante la tolerancia o se ignorará si excede los límites lógicos.>                         |
 
-### Tiempo de asentamiento del servo (paso 3 + script) //Se continuara el readme en la semana 10
-Salto empleado: de <grados> a <grados>   Banda de estabilidad: <cm> (del paso 2)
+### Tiempo de asentamiento del servo (paso 3 + script) //Se continuara el readme 
+Salto empleado: de <10> a <170>   Banda de estabilidad: <90cm> (del paso 2)
 
 | Repeticion | Valor final (cm) | Asentado a los (ms) |
 |------------|------------------|---------------------|
@@ -70,7 +70,7 @@ Salto empleado: de <grados> a <grados>   Banda de estabilidad: <cm> (del paso 2)
 | 5          | <>               | <>                  |
 
 Asentamiento medio: <ms>    PEOR caso: <ms>
-Parametro adoptado: ASENTAMIENTO_MS = <valor>
+Parametro adoptado: ASENTAMIENTO_MS = <1700ms>
 
 Se adopta el PEOR caso redondeado hacia arriba, no el promedio: un angulo mal
 medido de cada cinco basta para deformar el mapa completo, y en un mapa el error
@@ -78,11 +78,11 @@ de un solo punto se ve.
 
 | Parametro                          | Valor medido |
 |------------------------------------|--------------|
-| Angulos por vuelta                 | <37>          |
+| Angulos por vuelta                 | <10>          |
 | Vueltas registradas                | <5>          |
-| Angulos sin eco                    | <10%>          |
+| Angulos sin eco                    | <5%>          |
 | Repetibilidad entre vueltas        | <3cm> de dispersion media |
-| Peor angulo                        | <grados> (<cm>) |
+| Peor angulo                        | <2> (<cm>) |
 | Duracion de una vuelta completa    | <1700ms>         |
 
 Los angulos sin eco se concentran en zonas donde el pulso ultrasónico impacta superficies con ángulo no perpendicular. Explicacion del equipo:
