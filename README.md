@@ -97,15 +97,14 @@ La señal acústica sufre reflexión especular al chocar contra superficies incl
 
 ### Ingesta y Modelo de Datos InfluxDB (GT5)
 
-**Ruta de Ingesta:**
+**Ruta de Ingesta:
 Los datos son capturados por el ESP32, el cual los publica mediante el protocolo MQTT hacia el broker Mosquitto en el tópico `curso/E16/P14/radar`. Luego, el agente Telegraf está suscrito a este broker; lee el payload en formato JSON, parsea el tópico para extraer la metadata y persiste finalmente la serie temporal en la base de datos InfluxDB.
 
-**Esquema de la Base de Datos:**
-*   **Bucket común:** `mediciones`
-*   **Measurement común:** `mediciones`
-*   **Tags estructurales propios:** `equipo="E16"`, `proyecto="P14"`, `nodo="radar"`
-*   **Fields del proyecto:**
+Esquema de la Base de Datos:
+*   Bucket común:`mediciones`
+*   Measurement común: `mediciones`
+*   Tags estructurales propios:`equipo="E16"`, `proyecto="P14"`, `nodo="radar"`
+*   Fields del proyecto:
     *   `distancia` (cm) - Field principal analizado.
     *   `angulo` (grados) - Posición del servomotor SG90.
-    *   `bus_ok` y `sensor_ok` - Estados binarios (1/0) de diagnóstico
-
+    *   `bus_ok` y `sensor_ok` - Estados booleanos (1/0) de diagnóstico
