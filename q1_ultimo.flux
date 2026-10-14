@@ -1,0 +1,6 @@
+﻿from(bucket: "mediciones")
+  |> range(start: -1h)
+  |> filter(fn: (r) => r._measurement == "mediciones")
+  |> filter(fn: (r) => r.equipo == "E16" and r.proyecto == "P14" and r.nodo == "radar")
+  |> filter(fn: (r) => r._field == "distancia")
+  |> last()
