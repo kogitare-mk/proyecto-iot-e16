@@ -97,18 +97,17 @@ La señal acústica sufre reflexión especular al chocar contra superficies incl
 
 ### Ingesta y Modelo de Datos InfluxDB (GT5)
 
-Ruta de Ingesta:
-Los datos son capturados por el ESP32, el cual los publica mediante el protocolo MQTT hacia el broker Mosquitto en el tópico `curso/E16/P14/radar`. Luego, el agente Telegraf está suscrito a este broker; lee el payload en formato JSON, parsea el tópico para extraer la metadata y persiste finalmente la serie temporal en la base de datos InfluxDB.
-Para mantener la escalabilidad y evitar el antipatrón de alta cardinalidad, los datos se organizan separando estrictamente la identidad de la serie (Tags) de los valores que cambian en cada muestra (Fields)
-*   **Organización:** `curso-iot`
-*   **Bucket común:** `mediciones`
-*   **Measurement común:** `mediciones` (definido por el `name_override` de Telegraf).
-*   **Tags estructurales propios:**
-    *   `equipo="E16"`
-    *   `proyecto="P14"`
-    *   `nodo="radar"`
-    *   `topic="curso/E16/P14/radar"` (Tag auxiliar conservado).
-*   **Fields del proyecto (variables dinámicas):**
-    *   `distancia` (cm) - Variable numérica analizada.
-    *   `angulo` (grados) - Variable numérica oscilante del barrido del servomotor.
-    *   `bus_ok` y `sensor_ok` - Variables numéricas binarias (1/0) para control de fallos en el bus I2C y timeout del sensor.
+El pipeline de datos opera en tres etapas. El ESP32 publica el payload JSON en el broker Mosquitto (MQTT). El agente Telegraf, suscrito al patrón de tópicos del curso, extrae dinámicamente la información de los niveles del tópico para generar las etiquetas (tags) y finalmente persiste la serie temporal en la base de datos InfluxDB.
+
+| Recurso en el backend real | Nombre |
+|----------------------------|--------|
+| Organización               | curso-iot |
+| Bucket común               | mediciones |
+| Measurement común          | mediciones |
+
+| Tags estructurales (identidad) | Fields del proyecto (valores variables) |
+|--------------------------------|-----------------------------------------|
+| equipo="E16"                   | distancia (cm)                          |
+| proyecto="P14"                 | angulo (grados)                         |
+| nodo="radar"                   | bus_ok (1/0)                            |
+| topic="curso/E16/P14/radar"    | sensor_ok (1/0)                         |
