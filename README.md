@@ -82,7 +82,7 @@ de un solo punto se ve.
 | Vueltas registradas                | <5>          |
 | Angulos sin eco                    | <5%>          |
 | Repetibilidad entre vueltas        | <3cm> de dispersion media |
-| Peor angulo                        | <2> (<cm>) |
+| Peor angulo                        | <5> (<cm>) |
 | Duracion de una vuelta completa    | <1700ms>         |
 
 Los angulos sin eco se concentran en zonas donde el pulso ultrasónico impacta superficies con ángulo no perpendicular. Explicacion del equipo:
