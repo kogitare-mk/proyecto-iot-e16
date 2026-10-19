@@ -16,8 +16,8 @@ const uint8_t PIN_LED_AL  = 33;
 const uint8_t PIN_BUZZER  = 27; 
 
 // --- CALIBRACIÓN FÍSICA ---
-const float M_CAL = 1.0; 
-const float B_CAL = 0.0; 
+const float M_CAL = 0.96; 
+const float B_CAL = 1.04; 
 
 // --- PANTALLA OLED ---
 #define SCREEN_WIDTH 128
