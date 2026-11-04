@@ -7,7 +7,6 @@
 #include <ArduinoJson.h>
 #include "config.h" 
 
-// --- PINES ---
 const uint8_t PIN_TRIG    = 5;
 const uint8_t PIN_ECHO    = 18;
 const uint8_t PIN_SERVO   = 19;
@@ -15,18 +14,15 @@ const uint8_t PIN_BOTON   = 25;
 const uint8_t PIN_LED_AL  = 33; 
 const uint8_t PIN_BUZZER  = 27; 
 
-// --- CALIBRACIÓN FÍSICA ---
 const float M_CAL = 0.96; 
 const float B_CAL = 1.04; 
 
-// --- PANTALLA OLED ---
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 const uint8_t DIR_OLED = 0x3C;
 bool bus_ok = false;
 
-// --- CONFIGURACIÓN DE HARDWARE Y TIEMPOS ---
 const bool     BUZZER_PASIVO  = true; 
 const uint32_t FREC_BUZZER_HZ = 2000; 
 const uint8_t  ANGULO_MIN     = 10;   
@@ -37,7 +33,6 @@ const uint32_t T_ANTIRREBOTE_MS  = 80;
 const uint32_t TIMEOUT_ECO_US    = 6000; 
 const uint8_t  UMBRAL_ERRORES_BARRIDO = 4;
 
-// --- CONFIGURACIÓN MQTT ---
 const uint32_t PERIODO_PUB_MS    = 5000;   
 const uint32_t REINTENTO_WIFI_MS = 15000;
 const uint32_t ESPERA_INICIAL    = 2000;
@@ -50,7 +45,12 @@ String clientId, topicDatos, topicEstado, topicCmd;
 uint32_t tPub = 0, tWiFi = 0, tReconexion = 0;
 uint32_t esperaReconexion = ESPERA_INICIAL;
 
-// --- MÁQUINA DE ESTADOS ---
+enum CmdRemoto { CMD_NINGUNO, CMD_ON, CMD_OFF };
+CmdRemoto cmdRemoto = CMD_NINGUNO;
+uint32_t t_actuacion = 0;
+const uint32_t T_MAX_MS = 60000;
+
+
 enum Estado : uint8_t { BARRIDO, ASENTAMIENTO, DISPARAR_PULSO, ESPERAR_HIGH, ESPERAR_LOW, ACTUALIZAR_PANTALLA, ERROR_SEGURO };
 
 Servo    miServo;
@@ -124,7 +124,7 @@ void mostrarOLED(int ang, float dist, Estado est) {
   display.display();
 }
 
-// --- FUNCIONES RED Y MQTT ---
+
 void mantenerWiFi() {
   if (WiFi.status() == WL_CONNECTED) return;
   uint32_t ahora = millis();
@@ -141,7 +141,13 @@ void recibirComando(char* topic, byte* payload, unsigned int largo) {
     Serial.printf("[cmd] JSON invalido en %s\n", topic);
     return;
   }
-  Serial.printf("[cmd] recibido en %s\n", topic);
+  
+  const char* cmd = doc["cmd"];
+  if (cmd) {
+    if (strcmp(cmd, "ON") == 0) cmdRemoto = CMD_ON;
+    else if (strcmp(cmd, "OFF") == 0) cmdRemoto = CMD_OFF;
+    Serial.printf("[cmd recibido] %s\n", cmd);
+  }
 }
 
 void mantenerMQTT() {
@@ -175,6 +181,7 @@ void publicarDatos() {
   
   doc["sensor_ok"] = (invalidas < UMBRAL_ERRORES_BARRIDO) ? 1 : 0;
   doc["bus_ok"] = bus_ok ? 1 : 0;
+  doc["estado"] = (uint8_t)estado;
 
   char buf[256];
   size_t n = serializeJson(doc, buf, sizeof(buf));
@@ -236,11 +243,21 @@ void loop() {
     publicarDatos();
   }
 
+  if (estado != ERROR_SEGURO) {
+    if (cmdRemoto == CMD_ON) {
+      t_actuacion = millis();
+      digitalWrite(PIN_LED_AL, HIGH);
+      cmdRemoto = CMD_NINGUNO;
+    } else if (cmdRemoto == CMD_OFF || (digitalRead(PIN_LED_AL) == HIGH && millis() - t_actuacion > T_MAX_MS)) {
+      digitalWrite(PIN_LED_AL, LOW); 
+      if (cmdRemoto == CMD_OFF) cmdRemoto = CMD_NINGUNO;
+    }
+  }
+
   switch (estado) {
     case BARRIDO:
       {
         buzzer(false);
-        digitalWrite(PIN_LED_AL, LOW);
         angulo += (PASO_ANGULO * direccion);
         bool fin_vuelta = false;
         
@@ -329,6 +346,8 @@ void loop() {
       if (boton()) {
         invalidas = 0;
         buzzer(false);
+        digitalWrite(PIN_LED_AL, LOW); 
+        cmdRemoto = CMD_NINGUNO; 
         if (!miServo.attached()) miServo.attach(PIN_SERVO, 500, 2400);
         cambiar(BARRIDO);
       }
