@@ -111,3 +111,23 @@ El pipeline de datos opera en tres etapas. El ESP32 publica el payload JSON en e
 | proyecto="P14"                 | angulo (grados)                         |
 | nodo="radar"                   | bus_ok (1/0)                            |
 | topic="curso/E16/P14/radar"    | sensor_ok (1/0)                         |
+
+## GT6: Observabilidad, Alertas y Comando Remoto
+
+### Justificación de la Alerta (Grafana)
+
+* **Umbral Crítico (30 cm):** Definido en el charter del proyecto como límite de seguridad[cite: 6]. Es el mismo parámetro utilizado por la máquina de estados (FSM) local para detonar el estado de intrusión[cite: 3].
+* **Margen frente al Ruido ($40\sigma$):** En la GT1 medimos un ruido de $\sigma \approx 0,5$ cm en reposo[cite: 3]. Con objetos a 50 cm, tenemos 20 cm de holgura (un margen de $40\sigma$)[cite: 3]. Esto hace matemáticamente imposible que el ruido dispare una falsa alarma.
+* **Período de Confirmación («For» de 2 min):** Sirve como filtro de transitorios[cite: 3]. El radar ignora objetos fugaces (como alguien caminando) y solo dispara la alerta (estado Firing) si el obstáculo permanece fijo bloqueando la zona durante 120 segundos completos[cite: 3, 9].
+* **Detección de Caída (NoData):** Si el ESP32 pierde el WiFi, el envío de datos se detiene. Al acumular 5 minutos sin telemetría, la alerta pasa a estado NoData, notificando visualmente la caída del nodo[cite: 3, 6].
+
+
+
+### Comando Remoto y Seguridad (Node-RED)
+
+El ESP32 mantiene una suscripción activa y no bloqueante al tópico `curso/E16/P14/radar/cmd`.
+
+* **Recibir `{"cmd": "ON"}`:** Enciende asíncronamente el indicador visual de alerta a través de la FSM.
+* **Recibir `{"cmd": "OFF"}`:** Apaga el indicador local de inmediato.
+* **Seguridad (Timeout):**
+* Para evitar que el sistema quede bloqueado en estado de alarma si se corta la red, el firmware incluye un tiempo máximo de actuación (`T_MAX_MS`) de 60 segundos. Pasado ese tiempo sin recibir un comando nuevo, la alarma se apaga automáticamente por seguridad
