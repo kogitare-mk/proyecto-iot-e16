@@ -116,10 +116,10 @@ El pipeline de datos opera en tres etapas. El ESP32 publica el payload JSON en e
 
 ### Justificación de la Alerta (Grafana)
 
-* **Umbral Crítico (30 cm):** Definido en el charter del proyecto como límite de seguridad[cite: 6]. Es el mismo parámetro utilizado por la máquina de estados (FSM) local para detonar el estado de intrusión[cite: 3].
-* **Margen frente al Ruido ($40\sigma$):** En la GT1 medimos un ruido de $\sigma \approx 0,5$ cm en reposo[cite: 3]. Con objetos a 50 cm, tenemos 20 cm de holgura (un margen de $40\sigma$)[cite: 3]. Esto hace matemáticamente imposible que el ruido dispare una falsa alarma.
-* **Período de Confirmación («For» de 2 min):** Sirve como filtro de transitorios[cite: 3]. El radar ignora objetos fugaces (como alguien caminando) y solo dispara la alerta (estado Firing) si el obstáculo permanece fijo bloqueando la zona durante 120 segundos completos[cite: 3, 9].
-* **Detección de Caída (NoData):** Si el ESP32 pierde el WiFi, el envío de datos se detiene. Al acumular 5 minutos sin telemetría, la alerta pasa a estado NoData, notificando visualmente la caída del nodo[cite: 3, 6].
+* **Umbral Crítico (30 cm):** Definido en el charter del proyecto como límite de seguridad. Es el mismo parámetro utilizado por la máquina de estados (FSM) local para detonar el estado de intrusión.
+* **Margen frente al Ruido ($40\sigma$):** En la GT1 medimos un ruido de $\sigma \approx 0,5$ cm en reposo. Con objetos a 50 cm, tenemos 20 cm de holgura (un margen de $40\sigma$). Esto hace matemáticamente imposible que el ruido dispare una falsa alarma.
+* **Período de Confirmación («For» de 2 min):** Sirve como filtro de transitorios. El radar ignora objetos fugaces (como alguien caminando) y solo dispara la alerta (estado Firing) si el obstáculo permanece fijo bloqueando la zona durante 120 segundos completos.
+* **Detección de Caída (NoData):** Si el ESP32 pierde el WiFi, el envío de datos se detiene. Al acumular 5 minutos sin telemetría, la alerta pasa a estado NoData, notificando visualmente la caída del nodo.
 
 
 
