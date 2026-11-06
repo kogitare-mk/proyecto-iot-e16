@@ -51,7 +51,7 @@ uint32_t t_actuacion = 0;
 const uint32_t T_MAX_MS = 60000;
 
 
-enum Estado : uint8_t { BARRIDO, ASENTAMIENTO, DISPARAR_PULSO, ESPERAR_HIGH, ESPERAR_LOW, ACTUALIZAR_PANTALLA, ERROR_SEGURO };
+enum Estado : uint8_t { BARRIDO, ASENTAMIENTO, DISPARAR_PULSO, ESPERAR_HIGH, ESPERAR_LOW, ACTUALIZAR_PANTALLA, ERROR_SEGURO, ACTUANDO_REMOTO };
 
 Servo    miServo;
 Estado   estado      = BARRIDO;
@@ -72,6 +72,7 @@ const char* nombreEstado(Estado e) {
     case ESPERAR_LOW:         return "ESP_LOW";
     case ACTUALIZAR_PANTALLA: return "ACT_PANTALLA";
     case ERROR_SEGURO:        return "ERROR_SEGURO";
+    case ACTUANDO_REMOTO:     return "ACTUANDO_REMOTO";
   }
   return "?";
 }
@@ -177,6 +178,8 @@ void publicarDatos() {
   
   if (ultima_dist >= 0) {
     doc["distancia"] = roundf(ultima_dist * 10.0f) / 10.0f; 
+  }else{
+    doc["distancia"] = 0;
   }
   
   doc["sensor_ok"] = (invalidas < UMBRAL_ERRORES_BARRIDO) ? 1 : 0;
@@ -193,7 +196,6 @@ void publicarDatos() {
 
 void setup() {
   Serial.begin(115200);
-  
   Wire.begin(21, 22);
   Wire.setClock(400000); 
   if(!display.begin(SSD1306_SWITCHCAPVCC, DIR_OLED)) bus_ok = false;
@@ -243,14 +245,12 @@ void loop() {
     publicarDatos();
   }
 
-  if (estado != ERROR_SEGURO) {
+  if (estado != ERROR_SEGURO && estado != ACTUANDO_REMOTO) {
     if (cmdRemoto == CMD_ON) {
-      t_actuacion = millis();
-      digitalWrite(PIN_LED_AL, HIGH);
-      cmdRemoto = CMD_NINGUNO;
-    } else if (cmdRemoto == CMD_OFF || (digitalRead(PIN_LED_AL) == HIGH && millis() - t_actuacion > T_MAX_MS)) {
-      digitalWrite(PIN_LED_AL, LOW); 
-      if (cmdRemoto == CMD_OFF) cmdRemoto = CMD_NINGUNO;
+      t_actuacion = millis();           
+      digitalWrite(PIN_LED_AL, HIGH);    
+      cmdRemoto = CMD_NINGUNO;           
+      cambiar(ACTUANDO_REMOTO);          
     }
   }
 
@@ -332,6 +332,18 @@ void loop() {
       }
       break;
 
+    case ACTUANDO_REMOTO:
+      if (cmdRemoto == CMD_ON) {
+        t_actuacion = millis();
+        cmdRemoto = CMD_NINGUNO;
+      }
+      if (cmdRemoto == CMD_OFF || millis() - t_actuacion > T_MAX_MS) {
+        digitalWrite(PIN_LED_AL, LOW);
+        cmdRemoto = CMD_NINGUNO;
+        cambiar(BARRIDO);                
+      }
+      break;
+
     case ERROR_SEGURO:
       if (miServo.attached()) miServo.detach();
       digitalWrite(PIN_LED_AL, (millis() / 300) % 2);
@@ -353,6 +365,5 @@ void loop() {
       }
       break;
   }
-
   if (estado != ERROR_SEGURO && boton()) cambiar(ERROR_SEGURO);
 }
