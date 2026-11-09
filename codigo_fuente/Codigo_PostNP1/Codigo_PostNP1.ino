@@ -7,8 +7,8 @@
 #include <ArduinoJson.h>
 #include "config.h" 
 
-const uint8_t PIN_TRIG    = 5;
-const uint8_t PIN_ECHO    = 18;
+const uint8_t PIN_TRIG    = 18;
+const uint8_t PIN_ECHO    = 5;
 const uint8_t PIN_SERVO   = 19;
 const uint8_t PIN_BOTON   = 25; 
 const uint8_t PIN_LED_AL  = 33; 
@@ -178,8 +178,6 @@ void publicarDatos() {
   
   if (ultima_dist >= 0) {
     doc["distancia"] = roundf(ultima_dist * 10.0f) / 10.0f; 
-  }else{
-    doc["distancia"] = 0;
   }
   
   doc["sensor_ok"] = (invalidas < UMBRAL_ERRORES_BARRIDO) ? 1 : 0;
