@@ -22,6 +22,7 @@ const float B_CAL = 1.04;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 const uint8_t DIR_OLED = 0x3C;
 bool bus_ok = false;
+bool sensor_ok = true;
 
 const bool     BUZZER_PASIVO  = true; 
 const uint32_t FREC_BUZZER_HZ = 2000; 
@@ -49,7 +50,6 @@ enum CmdRemoto { CMD_NINGUNO, CMD_ON, CMD_OFF };
 CmdRemoto cmdRemoto = CMD_NINGUNO;
 uint32_t t_actuacion = 0;
 const uint32_t T_MAX_MS = 60000;
-
 
 enum Estado : uint8_t { BARRIDO, ASENTAMIENTO, DISPARAR_PULSO, ESPERAR_HIGH, ESPERAR_LOW, ACTUALIZAR_PANTALLA, ERROR_SEGURO, ACTUANDO_REMOTO };
 
@@ -121,10 +121,9 @@ void mostrarOLED(int ang, float dist, Estado est) {
   else display.printf("D: %.1f cm\n", dist);
   display.setTextSize(1);
   display.setCursor(0, 56);
-  display.printf("BUS: I2C %s", bus_ok ? "OK" : "ERROR");
+  display.printf("BUS:%s SEN:%s", bus_ok ? "OK" : "ERR", sensor_ok ? "OK" : "ERR");
   display.display();
 }
-
 
 void mantenerWiFi() {
   if (WiFi.status() == WL_CONNECTED) return;
@@ -180,7 +179,7 @@ void publicarDatos() {
     doc["distancia"] = roundf(ultima_dist * 10.0f) / 10.0f; 
   }
   
-  doc["sensor_ok"] = (invalidas < UMBRAL_ERRORES_BARRIDO) ? 1 : 0;
+  doc["sensor_ok"] = (sensor_ok && invalidas < UMBRAL_ERRORES_BARRIDO) ? 1 : 0;
   doc["bus_ok"] = bus_ok ? 1 : 0;
   doc["estado"] = (uint8_t)estado;
 
@@ -266,7 +265,11 @@ void loop() {
         }
         
         if (fin_vuelta) {
-          if (invalidas >= UMBRAL_ERRORES_BARRIDO) { cambiar(ERROR_SEGURO); break; }
+          if (invalidas >= UMBRAL_ERRORES_BARRIDO) { 
+            sensor_ok = false;
+            cambiar(ERROR_SEGURO); 
+            break; 
+          }
           invalidas = 0; 
         }
         
@@ -282,6 +285,14 @@ void loop() {
 
     case DISPARAR_PULSO:
       buzzer(false);
+      if (digitalRead(PIN_ECHO) == HIGH) {
+        invalidas++;
+        sensor_ok = false;
+        ultima_dist = -1.0;
+        cambiar(ACTUALIZAR_PANTALLA);
+        break;
+      }
+      
       digitalWrite(PIN_TRIG, LOW);
       delayMicroseconds(2);
       digitalWrite(PIN_TRIG, HIGH);
@@ -297,6 +308,7 @@ void loop() {
         cambiar(ESPERAR_LOW);
       } else if (micros() - t_timeout_inicio > TIMEOUT_ECO_US) {
         invalidas++;
+        sensor_ok = (invalidas < UMBRAL_ERRORES_BARRIDO);
         ultima_dist = -1.0; 
         cambiar(ACTUALIZAR_PANTALLA); 
       }
@@ -309,10 +321,12 @@ void loop() {
           float distancia_cruda = duracion * 0.0343 / 2.0; 
           ultima_dist = (distancia_cruda * M_CAL) + B_CAL;
           invalidas = 0;
+          sensor_ok = true;
           cambiar(ACTUALIZAR_PANTALLA);
           
         } else if (micros() - t_eco_inicio > TIMEOUT_ECO_US) {
           ultima_dist = -1.0; 
+          sensor_ok = (invalidas < UMBRAL_ERRORES_BARRIDO);
           cambiar(ACTUALIZAR_PANTALLA); 
         }
       }
@@ -343,6 +357,7 @@ void loop() {
       break;
 
     case ERROR_SEGURO:
+      sensor_ok = (invalidas < UMBRAL_ERRORES_BARRIDO);
       if (miServo.attached()) miServo.detach();
       digitalWrite(PIN_LED_AL, (millis() / 300) % 2);
       buzzer((millis() / 300) % 2); 
@@ -355,6 +370,7 @@ void loop() {
       
       if (boton()) {
         invalidas = 0;
+        sensor_ok = true;
         buzzer(false);
         digitalWrite(PIN_LED_AL, LOW); 
         cmdRemoto = CMD_NINGUNO; 
@@ -363,5 +379,6 @@ void loop() {
       }
       break;
   }
+
   if (estado != ERROR_SEGURO && boton()) cambiar(ERROR_SEGURO);
 }
