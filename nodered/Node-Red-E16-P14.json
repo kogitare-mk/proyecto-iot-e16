@@ -1,0 +1,691 @@
+[
+    {
+        "id": "tab_p14_radar",
+        "type": "tab",
+        "label": "P14 · radar",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "n_mqtt_in",
+        "type": "mqtt in",
+        "z": "tab_p14_radar",
+        "name": "datos del nodo",
+        "topic": "curso/E16/P14/radar",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "cfg_broker_curso",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "n_dbg_datos",
+                "n_chg_dist",
+                "n_chg_ang",
+                "n_sw_estado"
+            ]
+        ]
+    },
+    {
+        "id": "n_dbg_datos",
+        "type": "debug",
+        "z": "tab_p14_radar",
+        "name": "ver datos",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 380,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "n_chg_dist",
+        "type": "change",
+        "z": "tab_p14_radar",
+        "name": "sacar distancia",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.distancia",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 400,
+        "y": 110,
+        "wires": [
+            [
+                "n_gauge_dist",
+                "n_chart_dist"
+            ]
+        ]
+    },
+    {
+        "id": "n_chg_ang",
+        "type": "change",
+        "z": "tab_p14_radar",
+        "name": "sacar ángulo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.angulo",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 160,
+        "wires": [
+            [
+                "n_gauge_ang"
+            ]
+        ]
+    },
+    {
+        "id": "n_sw_estado",
+        "type": "switch",
+        "z": "tab_p14_radar",
+        "name": "¿qué estado?",
+        "property": "payload.estado",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "6",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "7",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 390,
+        "y": 240,
+        "wires": [
+            [
+                "n_chg_est_0"
+            ],
+            [
+                "n_chg_est_6"
+            ],
+            [
+                "n_chg_est_7"
+            ],
+            [
+                "n_chg_est_otro"
+            ]
+        ]
+    },
+    {
+        "id": "n_chg_est_0",
+        "type": "change",
+        "z": "tab_p14_radar",
+        "name": "BARRIDO",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "BARRIDO (VIGILANDO)",
+                "tot": "str"
+            }
+        ],
+        "x": 600,
+        "y": 200,
+        "wires": [
+            [
+                "n_txt_estado"
+            ]
+        ]
+    },
+    {
+        "id": "n_chg_est_6",
+        "type": "change",
+        "z": "tab_p14_radar",
+        "name": "ERROR_SEGURO",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ERROR_SEGURO (FALLO / PARADA)",
+                "tot": "str"
+            }
+        ],
+        "x": 620,
+        "y": 240,
+        "wires": [
+            [
+                "n_txt_estado"
+            ]
+        ]
+    },
+    {
+        "id": "n_chg_est_7",
+        "type": "change",
+        "z": "tab_p14_radar",
+        "name": "ACTUANDO_REMOTO",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ACTUANDO_REMOTO (LED ON)",
+                "tot": "str"
+            }
+        ],
+        "x": 640,
+        "y": 280,
+        "wires": [
+            [
+                "n_txt_estado"
+            ]
+        ]
+    },
+    {
+        "id": "n_chg_est_otro",
+        "type": "change",
+        "z": "tab_p14_radar",
+        "name": "OPERANDO",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "MIDIENDO (CICLO ACTIVO)",
+                "tot": "str"
+            }
+        ],
+        "x": 610,
+        "y": 320,
+        "wires": [
+            [
+                "n_txt_estado"
+            ]
+        ]
+    },
+    {
+        "id": "n_inj_on",
+        "type": "inject",
+        "z": "tab_p14_radar",
+        "name": "ON",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "ON",
+        "payloadType": "str",
+        "x": 150,
+        "y": 340,
+        "wires": [
+            [
+                "n_fn_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "n_inj_off",
+        "type": "inject",
+        "z": "tab_p14_radar",
+        "name": "OFF",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "OFF",
+        "payloadType": "str",
+        "x": 150,
+        "y": 390,
+        "wires": [
+            [
+                "n_fn_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "n_btn_on",
+        "type": "ui-button",
+        "z": "tab_p14_radar",
+        "group": "cfg_grp_comando",
+        "name": "",
+        "label": "ON",
+        "order": 1,
+        "width": "3",
+        "height": "1",
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "ON",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 150,
+        "y": 440,
+        "wires": [
+            [
+                "n_fn_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "n_btn_off",
+        "type": "ui-button",
+        "z": "tab_p14_radar",
+        "group": "cfg_grp_comando",
+        "name": "",
+        "label": "OFF",
+        "order": 2,
+        "width": "3",
+        "height": "1",
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "OFF",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 150,
+        "y": 490,
+        "wires": [
+            [
+                "n_fn_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "n_fn_cmd",
+        "type": "function",
+        "z": "tab_p14_radar",
+        "name": "armar comando",
+        "func": "const accion = msg.payload;\nif (accion !== \"ON\" && accion !== \"OFF\") {\n    return null;\n}\nmsg.payload = { cmd: accion };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 410,
+        "wires": [
+            [
+                "n_delay_rate"
+            ]
+        ]
+    },
+    {
+        "id": "n_delay_rate",
+        "type": "delay",
+        "z": "tab_p14_radar",
+        "name": "máx. 1 cada 5 s",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "5",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 600,
+        "y": 410,
+        "wires": [
+            [
+                "n_mqtt_out",
+                "n_dbg_cmd"
+            ]
+        ]
+    },
+    {
+        "id": "n_mqtt_out",
+        "type": "mqtt out",
+        "z": "tab_p14_radar",
+        "name": "comando QoS 1",
+        "topic": "curso/E16/P14/radar/cmd",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "cfg_broker_curso",
+        "x": 820,
+        "y": 390,
+        "wires": []
+    },
+    {
+        "id": "n_dbg_cmd",
+        "type": "debug",
+        "z": "tab_p14_radar",
+        "name": "comando enviado",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "n_gauge_dist",
+        "type": "ui-gauge",
+        "z": "tab_p14_radar",
+        "name": "",
+        "group": "cfg_grp_ahora",
+        "order": 1,
+        "width": "3",
+        "height": "3",
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Distancia (cm)",
+        "units": "cm",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#da291c"
+            },
+            {
+                "from": "30",
+                "color": "#16a34a"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 820,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "n_gauge_ang",
+        "type": "ui-gauge",
+        "z": "tab_p14_radar",
+        "name": "",
+        "group": "cfg_grp_ahora",
+        "order": 2,
+        "width": "3",
+        "height": "3",
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Ángulo (°)",
+        "units": "°",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "10",
+                "color": "#0284c7"
+            }
+        ],
+        "min": "10",
+        "max": "170",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 600,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "n_chart_dist",
+        "type": "ui-chart",
+        "z": "tab_p14_radar",
+        "group": "cfg_grp_historico",
+        "name": "",
+        "label": "Distancia medida (cm)",
+        "order": 1,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "cm",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "0",
+        "ymax": "100",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 2,
+        "showLegend": true,
+        "removeOlder": "30",
+        "removeOlderUnit": "60",
+        "removeOlderPoints": "",
+        "colors": [
+            "#da291c",
+            "#1f77b4",
+            "#ff7f0e",
+            "#2ca02c"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": "6",
+        "height": "5",
+        "className": "",
+        "interpolation": "linear",
+        "x": 820,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "n_txt_estado",
+        "type": "ui-text",
+        "z": "tab_p14_radar",
+        "group": "cfg_grp_ahora",
+        "order": 3,
+        "width": "6",
+        "height": "1",
+        "name": "",
+        "label": "Estado de la FSM",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#71717a",
+        "wrapText": false,
+        "className": "",
+        "x": 870,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "cfg_broker_curso",
+        "type": "mqtt-broker",
+        "name": "broker del curso",
+        "broker": "10.0.0.10",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "cfg_grp_comando",
+        "type": "ui-group",
+        "name": "Comando al nodo",
+        "page": "cfg_ui_page_p14",
+        "width": "6",
+        "height": "1",
+        "order": 3,
+        "showTitle": true,
+        "visible": true,
+        "disabled": false
+    },
+    {
+        "id": "cfg_grp_ahora",
+        "type": "ui-group",
+        "name": "Ahora",
+        "page": "cfg_ui_page_p14",
+        "width": "6",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "visible": true,
+        "disabled": false
+    },
+    {
+        "id": "cfg_grp_historico",
+        "type": "ui-group",
+        "name": "Últimos 30 minutos",
+        "page": "cfg_ui_page_p14",
+        "width": "6",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "visible": true,
+        "disabled": false
+    },
+    {
+        "id": "cfg_ui_page_p14",
+        "type": "ui-page",
+        "name": "Nodo P14 — Radar E16",
+        "ui": "cfg_ui_base",
+        "path": "/p14",
+        "icon": "radar",
+        "layout": "grid",
+        "theme": "cfg_ui_theme",
+        "order": 1,
+        "visible": true,
+        "disabled": false
+    },
+    {
+        "id": "cfg_ui_base",
+        "type": "ui-base",
+        "name": "Panel IoT",
+        "path": "/dashboard",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ]
+    },
+    {
+        "id": "cfg_ui_theme",
+        "type": "ui-theme",
+        "name": "Tema UA",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#da291c",
+            "bgPage": "#f4f4f5",
+            "groupBg": "#ffffff",
+            "groupOutline": "#e4e4e7"
+        }
+    },
+    {
+        "id": "01b65c4b1a13b2dc",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.37.0"
+        }
+    }
+]
